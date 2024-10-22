@@ -2,6 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 var cors = require('cors')
+const organizerRoutes = require('./src/Routes/organizer')
+const eventRoutes = require('./src/Routes/events')
+const reportRoutes = require("./src/Routes/report")
 
 require("dotenv").config();
 
@@ -39,6 +42,12 @@ db.on("disconnected", () => {
   console.log("Disconnected from MongoDB");
 });
 
+
+
+// Routes
+app.use('/api/organizers', organizerRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/reports', reportRoutes);
 
 
 
