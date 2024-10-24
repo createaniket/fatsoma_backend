@@ -6,6 +6,10 @@ const organizerRoutes = require('./src/Routes/organizer')
 const eventRoutes = require('./src/Routes/events')
 const reportRoutes = require("./src/Routes/report")
 
+const ScrapetRoutes = require("./src/Routes/scrapper")
+
+
+
 require("dotenv").config();
 
 const app = express();
@@ -48,6 +52,9 @@ db.on("disconnected", () => {
 app.use('/api/organizers', organizerRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/reports', reportRoutes);
+
+app.use('/api/scarapper', ScrapetRoutes);
+
 
 
 

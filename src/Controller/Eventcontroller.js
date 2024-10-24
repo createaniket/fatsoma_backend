@@ -1,5 +1,5 @@
-const Event = require('../models/Event');
-const Organizer = require('../models/Organizer');
+const Event = require('../Models/Events');
+const Organizer = require('../Models/ Organizer');
 
 const getEventsByOrganizer = async (req, res) => {
   const { organizerId } = req.params;

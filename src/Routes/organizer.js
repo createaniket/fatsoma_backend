@@ -1,5 +1,5 @@
 const express = require('express');
-const { getOrganizers, createOrganizer } = require('../controllers/organizerController');
+const { getOrganizers, createOrganizer } = require('../Controller/Organisercontroller');
 const router = express.Router();
 
 router.route('/')

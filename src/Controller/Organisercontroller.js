@@ -1,4 +1,4 @@
-const Organizer = require('../models/Organizer');
+const Organizer = require('../Models/ Organizer');
 
 const getOrganizers = async (req, res) => {
   try {
