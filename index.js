@@ -56,12 +56,6 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/scarapper', ScrapetRoutes);
 
 
-
-
-setInterval(() => {
-  console.log("I am just aliving the server")
-}, 20000);
-
 app.listen(port, () => {
   console.log(`port has been up at ${port}`);
 });
