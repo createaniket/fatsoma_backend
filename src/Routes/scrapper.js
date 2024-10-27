@@ -4,6 +4,6 @@ const router = express.Router();
 const ScrapeController = require('../Controller/ScrapperController'); // Adjust the path as necessary
 
 // Define a route for scraping events
-router.get('/scrape', ScrapeController.scrapeEvents);
+router.get('/scrape', ScrapeController.ExtractData);
 
 module.exports = router;

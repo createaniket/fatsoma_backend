@@ -7,6 +7,7 @@ const eventRoutes = require('./src/Routes/events')
 const reportRoutes = require("./src/Routes/report")
 
 const ScrapetRoutes = require("./src/Routes/scrapper")
+const Best = require('./Best')
 
 
 
@@ -45,6 +46,12 @@ db.once("open", () => {
 db.on("disconnected", () => {
   console.log("Disconnected from MongoDB");
 });
+
+
+
+
+
+
 
 
 
