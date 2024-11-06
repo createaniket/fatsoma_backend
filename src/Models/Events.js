@@ -1,19 +1,32 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  image: { type: String },
-  date: { type: Date, required: true },
-  time: { type: String },
-  venue: { type: String },
-  sales: { type: Number, default: 0 },
-  revenue: { type: Number, default: 0 },
-  incentives: { type: Number, default: 0 },
-  totalIn: { type: Number, default: 0 },
-  totalOut: { type: Number, default: 0 },
-  published: { type: Boolean, default: false },
-  announced: { type: Boolean, default: false },
-  organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'Organizer' }
+    eventName: String,
+    sales: Number,
+    incentives: Number,
+    totalIn: Number,
+    totalOut: Number,
+    revenue: Number
 });
 
-module.exports = mongoose.model('Event', eventSchema);
+const brandSchema = new mongoose.Schema({
+    brandName: String,
+    sales: Number,
+    incentives: Number,
+    totalIn: Number,
+    totalOut: Number,
+    revenue: Number,
+    events: [eventSchema]
+});
+
+const dateSchema = new mongoose.Schema({
+    date: Date,
+    sales: Number,
+    incentives: Number,
+    totalIn: Number,
+    totalOut: Number,
+    revenue: Number,
+    brands: [brandSchema]
+});
+
+module.exports = mongoose.model('Event', dateSchema);

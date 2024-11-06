@@ -23,6 +23,44 @@ const createEvent = async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
+}
+
+const GetAllEvents = async (req, res) => {
+ 
+  console.log("jcbjkvr flk")
+  try {
+    const events = await Event.find({});
+    res.json({data:events});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-module.exports = { getEventsByOrganizer, createEvent };
+
+
+const GetAllEventsbyBrandName = async (req, res) => {
+  console.log("Endpoint hit for fetching events by brand name");
+  const brandName = req.body.organiser; // Assuming organiser here is the brand name
+
+  try {
+    // Find events where a brand in the brands array matches the brand name
+    const events = await Event.find({
+      "brands": { 
+        $elemMatch: { brandName: brandName } 
+      }
+    });
+
+    res.json({ data: events });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+
+
+
+
+
+module.exports = { getEventsByOrganizer, createEvent, GetAllEvents , GetAllEventsbyBrandName};

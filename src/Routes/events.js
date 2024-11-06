@@ -1,9 +1,15 @@
 const express = require('express');
-const { getEventsByOrganizer, createEvent } = require('../Controller/Eventcontroller');
+const { getEventsByOrganizer, createEvent, GetAllEvents , GetAllEventsbyBrandName} = require('../Controller/Eventcontroller');
 const router = express.Router();
 
-router.route('/:organizerId')
-  .get(getEventsByOrganizer)
-  .post(createEvent);
+
+
+router.get('/getall',GetAllEvents )
+
+router.get('/getall/bybrand',GetAllEventsbyBrandName )
+
+
+
+
 
 module.exports = router;

@@ -6,4 +6,7 @@ const ScrapeController = require('../Controller/ScrapperController'); // Adjust 
 // Define a route for scraping events
 router.get('/scrape', ScrapeController.ExtractData);
 
+
+router.get('/updatedata/:id',ScrapeController.updateBrandData )
+
 module.exports = router;
