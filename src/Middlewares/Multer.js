@@ -15,6 +15,7 @@ const getDynamicStorage = (albumTitle) => {
 
 // Middleware to dynamically set storage based on album title
 const albumUpload = (albumTitle) => {
+console.log("bc  ehjrc erec",albumTitle );
   const storage = getDynamicStorage(albumTitle);
   const upload = multer({ storage });
   return upload.fields([

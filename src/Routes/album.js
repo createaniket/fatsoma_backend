@@ -9,6 +9,7 @@ router.post('/upload',  (req, res, next) => {
     const { title } = req.body;  // Extract album title from request body
 
    console.log("cnejv jevlkv rkle", req.body);
+   
     const upload = albumUpload(title);  // Pass album title to middleware
     upload(req, res, (err) => {
       if (err) {
