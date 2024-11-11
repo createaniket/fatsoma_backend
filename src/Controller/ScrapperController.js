@@ -5,7 +5,11 @@ async function ExtractData(req, res) {
     const email = process.env.SCARPPER_MAIL;
     const password = process.env.SCARPPER_PASWRD;
     const loginUrl = 'https://business.fatsoma.com/api/authentications/basic.json';
-    const dataUrl = 'https://business.fatsoma.com/api/business/companies/c7275d6b-ceb0-43fc-acbf-64ba6ddb91ae/daily_stats.json?currency=GBP';
+    const AlevelTour = '5af7f397-d251-48d5-8431-b93b88ee34b9';
+    const Bournemouth = 'c7275d6b-ceb0-43fc-acbf-64ba6ddb91ae';
+    const Coventry = '444674a1-71d4-42c1-8180-66c3112ccea7';
+
+    const dataUrl = `https://business.fatsoma.com/api/business/companies/${Coventry}/daily_stats.json?currency=GBP`;
 
     try {
         // Log in and store cookies
@@ -179,7 +183,7 @@ async function updateBrandData(req, res) {
                             totalIn: entry.cells[3]?.data || 0,
                             totalOut: entry.cells[4]?.data || 0,
                             revenue: entry.cells[5]?.data || 0,
-                            events: entry.events.map(event => ({
+                            events: entry.events?.map(event => ({
                                 eventName: event.eventName,
                                 sales: event.sales?.data || 0,
                                 incentives: event.incentives?.data || 0,
