@@ -4,7 +4,7 @@ const cloudinary = require('../config/Coudinaryconfig');
 
 const uploadAlbum = async (req, res) => {
   try {
-    const { title, club, eventName, tags } = req.body;
+    const { title, club, eventName, tags, date, venue } = req.body;
 
     // Access the cover photo from req.files
     const coverPhotoFile = req.files?.coverPhoto?.[0]; // Use optional chaining to avoid undefined errors
@@ -29,6 +29,8 @@ const uploadAlbum = async (req, res) => {
       title,
       club,
       eventName,
+      date,
+      venue,
       tags: tags.split(',').map(tag => tag.trim()),
       coverPhoto: coverPhoto.url,
       photos
