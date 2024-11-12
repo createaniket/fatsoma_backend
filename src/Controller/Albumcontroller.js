@@ -4,28 +4,19 @@ const Album = require('../Models/Abums');
 const uploadAlbum = async (req, res) => {
   try {
     const { title, club, eventName, tags, date, venue } = req.body;
+    const coverPhotoFile = req.files?.coverPhoto?.[0];
 
-
-    // Access the cover photo from req.files
-    const coverPhotoFile = req.files?.coverPhoto?.[0]; // Use optional chaining to avoid undefined errors
     if (!coverPhotoFile) {
       return res.status(400).json({ error: 'Cover photo is required' });
     }
 
-    // Set up cover photo details
-    const coverPhoto = {
-      url: coverPhotoFile.path,
-      public_id: coverPhotoFile.filename
-    };
+    // Use the photos data that was stored in the middleware
+    const photos = req.photosData; // This contains all the URLs and public_ids of photos
 
+    if (!photos || photos.length === 0) {
+      return res.status(400).json({ error: 'At least one photo is required' });
+    }
 
-    // Access album photos from req.files
-    const photos = req.files.photos?.map((file) => ({
-      url: file.path,
-      public_id: file.filename
-    }));
-
-    // Create and save the album document
     const album = new Album({
       title,
       club,
@@ -33,12 +24,12 @@ const uploadAlbum = async (req, res) => {
       date,
       venue,
       tags: tags.split(',').map(tag => tag.trim()),
-      coverPhoto: coverPhoto.url,
-      photos
+      coverPhoto: photos[0].url,  // Assuming the first photo is the cover photo
+      photos // This is an array of photo objects with URLs and public_ids
     });
 
     await album.save();
-    res.status(201).json({ message: 'Album uploaded successfully', album });
+    res.status(201).json({ status:201,message: 'Album uploaded successfully', album });
   } catch (error) {
     console.error('Error uploading album:', error);
     res.status(500).json({ error: 'Error uploading album' });
@@ -52,7 +43,8 @@ const GetAlAlbums = async (req, res) => {
   
   try {
 
-    const result = Album.find({})
+    const result = await Album.find({})
+    console.log("dcbjrvkbkjv", result)
 
     res.status(200).json({
       message:"All Albums",
@@ -62,14 +54,12 @@ const GetAlAlbums = async (req, res) => {
     
   } catch (error) {
     
-    console.error('Error uploading album:', error);
+    console.error('Error fetching album:', error);
     res.status(500).json({ error: 'Error fetching album' });
   }
 
 
 
 }
-module.exports = {
-  uploadAlbum,
-  GetAlAlbums
-};
+
+module.exports = { uploadAlbum, GetAlAlbums };

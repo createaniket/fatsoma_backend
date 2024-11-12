@@ -69,3 +69,4 @@ app.use('/api/album', Albums);
 app.listen(port, () => {
   console.log(`port has been up at ${port}`);
 });
+app.timeout = 900000; // Set timeout to 15 minutes
