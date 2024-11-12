@@ -55,10 +55,6 @@ db.on("disconnected", () => {
 
 
 
-
-
-
-
 // Routes
 app.use('/api/organizers', organizerRoutes);
 app.use('/api/events', eventRoutes);

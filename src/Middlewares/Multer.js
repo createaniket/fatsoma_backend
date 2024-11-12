@@ -7,7 +7,7 @@ const getDynamicStorage = (albumTitle) => {
   return new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-      folder: `albums/${albumTitle}`, // Dynamic folder based on album title
+      folder: `albums`, // Dynamic folder based on album title
       allowed_formats: ['jpg', 'jpeg', 'png']
     }
   });
@@ -15,7 +15,6 @@ const getDynamicStorage = (albumTitle) => {
 
 // Middleware to dynamically set storage based on album title
 const albumUpload = (albumTitle) => {
-console.log("bc  ehjrc erec",albumTitle );
   const storage = getDynamicStorage(albumTitle);
   const upload = multer({ storage });
   return upload.fields([

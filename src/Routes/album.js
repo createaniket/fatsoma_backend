@@ -1,22 +1,20 @@
-// routes/albums.js
 const express = require('express');
 const router = express.Router();
-const albumUpload = require('../Middlewares/Multer'); // Use the updated multer config
+const albumUpload = require('../middlewares/multer');  // Updated multer config
 const { uploadAlbum } = require('../Controller/Albumcontroller');
 
 // Route to upload an album with metadata and photos
-router.post('/upload',  (req, res, next) => {
-    const { title } = req.body;  // Extract album title from request body
+router.post('/upload', (req, res, next) => {
 
-   console.log("cnejv jevlkv rkle", req.body);
-   
-    const upload = albumUpload(title);  // Pass album title to middleware
+    const upload = albumUpload('default_album'); // Default folder name if title is undefined
+
     upload(req, res, (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Error uploading files' });
-      }
-      next();
+        if (err) {
+            return res.status(500).json({ error: 'Error uploading files', details: err.message });
+        }
+        // Pass to the controller if title and files exist
+        uploadAlbum(req, res);
     });
-  }, uploadAlbum
-);
-  module.exports = router;
+});
+
+module.exports = router;

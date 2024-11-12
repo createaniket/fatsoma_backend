@@ -6,6 +6,7 @@ const uploadAlbum = async (req, res) => {
   try {
     const { title, club, eventName, tags, date, venue } = req.body;
 
+
     // Access the cover photo from req.files
     const coverPhotoFile = req.files?.coverPhoto?.[0]; // Use optional chaining to avoid undefined errors
     if (!coverPhotoFile) {
@@ -17,6 +18,7 @@ const uploadAlbum = async (req, res) => {
       url: coverPhotoFile.path,
       public_id: coverPhotoFile.filename
     };
+
 
     // Access album photos from req.files
     const photos = req.files.photos?.map((file) => ({
