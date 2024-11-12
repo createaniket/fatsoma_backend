@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const albumUpload = require('../middlewares/multer');  // Updated multer config
-const { uploadAlbum } = require('../Controller/Albumcontroller');
+const albumUpload = require('../Middlewares/Multer');  // Updated multer config
+const { uploadAlbum, GetAlAlbums } = require('../Controller/Albumcontroller');
 
 // Route to upload an album with metadata and photos
 router.post('/upload', (req, res, next) => {
@@ -16,5 +16,8 @@ router.post('/upload', (req, res, next) => {
         uploadAlbum(req, res);
     });
 });
+
+
+router.get('/getall', GetAlAlbums)
 
 module.exports = router;

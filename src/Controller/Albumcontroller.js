@@ -1,6 +1,5 @@
 // controllers/albumController.js
 const Album = require('../Models/Abums');
-const cloudinary = require('../config/Coudinaryconfig');
 
 const uploadAlbum = async (req, res) => {
   try {
@@ -46,6 +45,31 @@ const uploadAlbum = async (req, res) => {
   }
 };
 
+
+const GetAlAlbums = async (req, res) => {
+
+
+  
+  try {
+
+    const result = Album.find({})
+
+    res.status(200).json({
+      message:"All Albums",
+      data:result
+    })
+
+    
+  } catch (error) {
+    
+    console.error('Error uploading album:', error);
+    res.status(500).json({ error: 'Error fetching album' });
+  }
+
+
+
+}
 module.exports = {
-  uploadAlbum
+  uploadAlbum,
+  GetAlAlbums
 };
