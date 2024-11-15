@@ -24,6 +24,12 @@ const ScrapetRoutes = require("./src/Routes/scrapper")
 
 const Albums = require("./src/Routes/album")
 
+const Dropboxx = require("./src/Routes/dropbox")
+
+const User = require("./src/Routes/user")
+
+
+
 
 
 
@@ -63,6 +69,11 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/scarapper', ScrapetRoutes);
 
 app.use('/api/album', Albums);
+
+app.use('/api/drropbox', Dropboxx)
+
+app.use('/api/user', User)
+
 
 
 
