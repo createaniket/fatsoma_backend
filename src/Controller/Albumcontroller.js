@@ -1,35 +1,64 @@
-// controllers/albumController.js
-const Album = require('../Models/Abums');
+const Album = require('../Models/Albums');
+const { uploadToCloudinary } = require('../Middlewares/Multer');
+
+
+
+
+
+
+
+
+
+
+
+
 
 const uploadAlbum = async (req, res) => {
+  console.log("the body", req.body)
   try {
-    const { title, club, eventName, tags, date, venue } = req.body;
-    const coverPhotoFile = req.files?.coverPhoto?.[0];
+    const { title, club, eventName, tags, date, venue, dropboxImages } = req.body;
+    const coverPhotoFile = req.files?.coverPhoto?.[0]; // Single cover photo
 
     if (!coverPhotoFile) {
       return res.status(400).json({ error: 'Cover photo is required' });
     }
 
-    // Use the photos data that was stored in the middleware
-    const photos = req.photosData; // This contains all the URLs and public_ids of photos
-
-    if (!photos || photos.length === 0) {
-      return res.status(400).json({ error: 'At least one photo is required' });
+    // Parse dropboxImages if it's a stringified array
+    let dropboxImagesArray;
+    try {
+      dropboxImagesArray = typeof dropboxImages === 'string' ? JSON.parse(dropboxImages) : dropboxImages;
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid JSON format for dropboxImages' });
     }
 
+    if (!Array.isArray(dropboxImagesArray)) {
+      return res.status(400).json({ error: 'dropboxImages must be an array' });
+    }
+
+    // Upload cover photo to Cloudinary
+    const coverPhotoUpload = await uploadToCloudinary(coverPhotoFile.buffer, 'albums/cover_photos');
+
+    // Process dropboxImages to create photo objects
+    const photos = dropboxImagesArray.map((imageUrl) => ({
+      url: imageUrl,
+      downloads: 0,
+      likes: 0,
+    }));
+
+    // Create the album document
     const album = new Album({
       title,
       club,
       eventName,
       date,
       venue,
-      tags: tags.split(',').map(tag => tag.trim()),
-      coverPhoto: photos[0].url,  // Assuming the first photo is the cover photo
-      photos // This is an array of photo objects with URLs and public_ids
+      tags: tags.split(',').map((tag) => tag.trim()),
+      coverPhoto: coverPhotoUpload.secure_url,
+      photos, // Attach the processed photos array
     });
 
     await album.save();
-    res.status(201).json({ status:201,message: 'Album uploaded successfully', album });
+    res.status(201).json({ status: 201, message: 'Album uploaded successfully', album });
   } catch (error) {
     console.error('Error uploading album:', error);
     res.status(500).json({ error: 'Error uploading album' });
@@ -37,29 +66,20 @@ const uploadAlbum = async (req, res) => {
 };
 
 
+
+
+
+
+
+
 const GetAlAlbums = async (req, res) => {
-
-
-  
   try {
-
-    const result = await Album.find({})
-    console.log("dcbjrvkbkjv", result)
-
-    res.status(200).json({
-      message:"All Albums",
-      data:result
-    })
-
-    
+    const albums = await Album.find({}).sort({ date: -1 }); // Sort by date in descending order
+    res.status(200).json({ message: 'All Albums', data: albums });
   } catch (error) {
-    
-    console.error('Error fetching album:', error);
-    res.status(500).json({ error: 'Error fetching album' });
+    console.error('Error fetching albums:', error);
+    res.status(500).json({ error: 'Error fetching albums' });
   }
-
-
-
-}
+};
 
 module.exports = { uploadAlbum, GetAlAlbums };
