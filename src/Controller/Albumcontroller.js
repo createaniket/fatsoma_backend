@@ -14,7 +14,10 @@ const { uploadToCloudinary } = require('../Middlewares/Multer');
 
 
 const uploadAlbum = async (req, res) => {
-  console.log("the body", req.body.dropboxImages)
+  console.log("the bodyiioiiioiooi", req.body.dropboxImages)
+
+  console.log("the body", req.body)
+
   try {
     const { title, club, eventName, tags, date, venue, dropboxImages } = req.body;
     const coverPhotoFile = req.files?.coverPhoto?.[0]; // Single cover photo
