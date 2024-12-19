@@ -115,11 +115,10 @@ async function refreshAccessToken(refreshToken) {
 // // Step 3: Fetch Dropbox files using access token
 router.get("/fetch-files", async (req, res) => {
   const AllImages = [];
-  console.log("Request Query:", req.query.path);
   const FolderPath = req.query.path || ""; // Default to root folder if path is not provided
+  console.log("Resolved FolderPath:", FolderPath);
 
   try {
-    // Retrieve the most recent Dropbox token record from the database
     const tokenRecord = await DropboxToken.findOne().sort({ createdAt: -1 });
 
     if (!tokenRecord) {
@@ -128,35 +127,39 @@ router.get("/fetch-files", async (req, res) => {
 
     let accessToken = tokenRecord.accessToken;
 
-    // If the access token is expired, refresh it
     if (await isAccessTokenExpired(accessToken)) {
+      console.log("Access token expired, refreshing...");
       accessToken = await refreshAccessToken(tokenRecord.refreshToken);
     }
 
     console.log("Making API call to Dropbox");
-    const response = await axios.post(
-      "https://api.dropboxapi.com/2/files/list_folder",
-      { path: FolderPath },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const files = [];
+    let hasMore = true;
+    let cursor;
 
-    console.log("Dropbox API Response:", response.data);
+    while (hasMore) {
+      const response = await axios.post(
+        cursor
+          ? "https://api.dropboxapi.com/2/files/list_folder/continue"
+          : "https://api.dropboxapi.com/2/files/list_folder",
+        cursor ? { cursor } : { path: FolderPath },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    // Save only image links to MongoDB
-    const files = response.data.entries.filter(
-      (file) => file[".tag"] === "file"
-    ); // Filter only files
+      files.push(...response.data.entries.filter((entry) => entry[".tag"] === "file"));
+      hasMore = response.data.has_more;
+      cursor = response.data.cursor;
+    }
 
     for (const file of files) {
       let sharedLink;
 
       try {
-        // Attempt to create a shared link
         const sharedLinkResponse = await axios.post(
           "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings",
           { path: file.path_lower },
@@ -167,49 +170,35 @@ router.get("/fetch-files", async (req, res) => {
             },
           }
         );
-
         sharedLink = sharedLinkResponse.data.url;
       } catch (error) {
         if (
           error.response &&
           error.response.data.error[".tag"] === "shared_link_already_exists"
         ) {
-          // If shared link already exists, use the existing one
-          sharedLink =
-            error.response.data.error.shared_link_already_exists.metadata.url;
+          sharedLink = error.response.data.error.shared_link_already_exists.metadata.url;
         } else {
-          console.error(
-            "Error creating shared link:",
-            error.response ? error.response.data : error.message
-          );
-          continue; // Skip this file if there's an issue
+          console.error("Error creating shared link:", error.message);
+          continue;
         }
       }
 
-      console.log("The link before modification:", sharedLink);
-
-      // Parse the shared link
       const url = new URL(sharedLink);
-      
-      // Update the 'dl' parameter to '1' or use 'raw=1' for direct display
-      url.searchParams.set("raw", "1"); // Add or replace 'raw' parameter
-      url.searchParams.delete("dl");    // Remove 'dl' parameter if present
-      
-      // Convert the URL object back to a string
+      url.searchParams.set("raw", "1");
+      url.searchParams.delete("dl");
       sharedLink = url.toString();
-      
-      console.log("The link after modification:", sharedLink);
-      
+
+      console.log("Modified Shared Link:", sharedLink);
       AllImages.push(sharedLink);
     }
 
-    res.json({ message: "Image links stored successfully", files, AllImages });
+    res.json({ message: "Image links provided successfully", files, AllImages });
   } catch (error) {
-    console.error(
-      "Error fetching files:",
-      error.response ? error.response.data : error.message
-    );
-    res.status(500).send("An error occurred");
+    console.error("Error fetching files:", error.response ? error.response.data : error.message);
+    if (error.response && error.response.data.error_summary.includes("path/not_found")) {
+      return res.status(404).json({ message: `Folder not found: ${FolderPath}` });
+    }
+    res.status(500).send("An error occurred while fetching files");
   }
 });
 
