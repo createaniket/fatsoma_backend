@@ -85,4 +85,20 @@ const GetAlAlbums = async (req, res) => {
   }
 };
 
-module.exports = { uploadAlbum, GetAlAlbums };
+
+
+const GetAlAlbumById = async (req, res) => {
+  console.log("ism shegtehe")
+  try {
+    const AlbumId = req.params.id;
+  console.log("AlbumIdAlbumIdAlbumIdAlbumId", AlbumId)
+
+    const SingleAlbum = await Album.findById(AlbumId); // Sort by date in descending order
+    res.status(200).json({ message: 'All Albums', data: SingleAlbum });
+  } catch (error) {
+    console.error('Error fetching albums:', error);
+    res.status(500).json({ error: 'Error fetching albums' });
+  }
+};
+
+module.exports = { uploadAlbum, GetAlAlbums, GetAlAlbumById};
