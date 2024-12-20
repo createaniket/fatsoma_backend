@@ -101,4 +101,68 @@ const GetAlAlbumById = async (req, res) => {
   }
 };
 
-module.exports = { uploadAlbum, GetAlAlbums, GetAlAlbumById};
+
+
+// Controller to increase likes for a photo
+const increaseLikes = async (req, res) => {
+  try {
+    const { albumId, photoId } = req.params; // Expecting albumId and photoId in the request params
+
+    // Find the album by its ID
+    const album = await Album.findById(albumId);
+    if (!album) {
+      return res.status(404).json({ message: 'Album not found' });
+    }
+
+    // Find the photo in the album by its ID
+    const photo = album.photos.id(photoId);
+    if (!photo) {
+      return res.status(404).json({ message: 'Photo not found' });
+    }
+
+    // Increase the likes by 1
+    photo.likes += 1;
+
+    // Save the updated album
+    await album.save();
+
+    return res.status(200).json({ message: 'Photo like updated successfully', album });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+// Controller to increase downloads for a photo
+const increaseDownloads = async (req, res) => {
+  try {
+    const { albumId, photoId } = req.params; // Expecting albumId and photoId in the request params
+
+    // Find the album by its ID
+    const album = await Album.findById(albumId);
+    if (!album) {
+      return res.status(404).json({ message: 'Album not found' });
+    }
+
+    // Find the photo in the album by its ID
+    const photo = album.photos.id(photoId);
+    if (!photo) {
+      return res.status(404).json({ message: 'Photo not found' });
+    }
+
+    // Increase the downloads by 1
+    photo.downloads += 1;
+
+    // Save the updated album
+    await album.save();
+
+    return res.status(200).json({ message: 'Photo download updated successfully', album });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { uploadAlbum, GetAlAlbums, GetAlAlbumById, increaseLikes, increaseDownloads};
