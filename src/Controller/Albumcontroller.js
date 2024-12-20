@@ -105,8 +105,13 @@ const GetAlAlbumById = async (req, res) => {
 
 // Controller to increase likes for a photo
 const increaseLikes = async (req, res) => {
+  console.log("i have been hit oncrease llike")
   try {
     const { albumId, photoId } = req.params; // Expecting albumId and photoId in the request params
+
+    console.log("albumid ffro resct", albumId)
+
+    console.log("phto ffro resct", photoId)
 
     // Find the album by its ID
     const album = await Album.findById(albumId);
