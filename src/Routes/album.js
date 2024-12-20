@@ -12,10 +12,10 @@ router.get('/getall', GetAlAlbums);
 router.get('/get/:id', GetAlAlbumById);
 
 // Route to increase likes for a specific photo
-router.put('/albums/:albumId/photos/:photoId/increase-likes', increaseLikes);
+router.patch('/albums/:albumId/photos/:photoId/increase-likes', increaseLikes);
 
 // Route to increase downloads for a specific photo
-router.put('/albums/:albumId/photos/:photoId/increase-downloads', increaseDownloads);
+router.patch('/albums/:albumId/photos/:photoId/increase-downloads', increaseDownloads);
 
 
 module.exports = router;
