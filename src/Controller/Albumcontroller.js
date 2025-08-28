@@ -86,7 +86,7 @@ const GetAlAlbums = async (req, res) => {
 };
 
 
-const GetAllAlbums = async (req, res) => {
+const GetAlAlbumById = async (req, res) => {
   try {
     const albums = await Album.find()
       .sort({ createdAt: -1 })  // latest first
