@@ -86,34 +86,47 @@ const GetAlAlbums = async (req, res) => {
 };
 
 
-// const GetAlAlbumById = async (req, res) => {
-//   try {
-//     const albums = await Album.find()
-//       .sort({ createdAt: -1 })  // latest first
-//       .limit(50);               // only 50 items
+const GetAlAlbumById = async (req, res) => {
+  try {
+    const AlbumId = req.params.id;
+    console.log("AlbumId:", AlbumId);
 
-//     res.status(200).json({ message: 'Latest 50 Albums', data: albums });
+    const album = await Album.findById(AlbumId);
+    if (!album) {
+      return res.status(404).json({ error: 'Album not found' });
+    }
+
+    // Limit photos array to 50 items
+    const limitedPhotos = album.photos?.slice(0, 50) || [];
+
+    res.status(200).json({ 
+      message: 'Album found', 
+      data: { 
+        ...album.toObject(), 
+        photos: limitedPhotos 
+      } 
+    });
+  } catch (error) {
+    console.error('Error fetching album:', error);
+    res.status(500).json({ error: 'Error fetching album' });
+  }
+};
+
+
+
+// const GetAlAlbumById = async (req, res) => {
+//   console.log("ism shegtehe")
+//   try {
+//     const AlbumId = req.params.id;
+//   console.log("AlbumIdAlbumIdAlbumIdAlbumId", AlbumId)
+
+//     const SingleAlbum = await Album.findById(AlbumId); // Sort by date in descending order
+//     res.status(200).json({ message: 'All Albums', data: SingleAlbum });
 //   } catch (error) {
 //     console.error('Error fetching albums:', error);
 //     res.status(500).json({ error: 'Error fetching albums' });
 //   }
 // };
-
-
-
-const GetAlAlbumById = async (req, res) => {
-  console.log("ism shegtehe")
-  try {
-    const AlbumId = req.params.id;
-  console.log("AlbumIdAlbumIdAlbumIdAlbumId", AlbumId)
-
-    const SingleAlbum = await Album.findById(AlbumId); // Sort by date in descending order
-    res.status(200).json({ message: 'All Albums', data: SingleAlbum });
-  } catch (error) {
-    console.error('Error fetching albums:', error);
-    res.status(500).json({ error: 'Error fetching albums' });
-  }
-};
 
 
 
